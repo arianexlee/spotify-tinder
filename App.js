@@ -4,101 +4,48 @@ import { useSpotifyAuth } from "./utils";
 import { Themes } from "./assets/Themes";
 import SongItem from "./components/songItem";
 import reactDom from "react-dom";
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from "@react-navigation/stack";
+import HomeScreen from './components/homeScreen';
+import DetailScreen from './components/detailScreen';
+import PreviewScreen from './components/previewScreen';
 
-const AuthButton = (props) => {
-  return (
-    <Pressable onPress={props.authFunction} style={styles.connect}>
-      <Image source={require('./assets/spotify-logo.png')} style={styles.connectLogo}>
-      </Image>
-      <Text style={styles.connectText}>Connect with Spotify</Text>
-    </Pressable>
-  )
-}
-
-const List = ({tracks}) => {
-  return (
-    <FlatList
-      data={tracks}
-      renderItem={SongItem}
-      // keyExtractor={(item) => item.id}
-    />
-  );
-}
-
-const Header = (props) => {
-  return (
-    <View style={styles.Header}>
-      <Image source={require('./assets/spotify-logo.png')} style={styles.connectLogo}>
-      </Image>
-      <Text style={styles.connectText}>My Top Tracks</Text>
-    </View>
-  );
-}
+const Stack = createStackNavigator();
 
 export default function App() {
-  // Pass in true to useSpotifyAuth to use the album ID (in env.js) instead of top tracks
-  const { token, tracks, getSpotifyAuth } = useSpotifyAuth();
-
-  let contentDisplayed;
-  if (token) {
-    contentDisplayed =
-    <List tracks={tracks}/>
-
-  } else {
-    contentDisplayed = 
-    <AuthButton authFunction={getSpotifyAuth}/>
-  }
-
-  let header;
-  if (token) {
-    header = <Header/>
-  }
-
   return (
-    <SafeAreaView style={styles.container}>
-      {header}
-      {contentDisplayed}
-    </SafeAreaView>
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen name = 'homeScreen' component={HomeScreen}  options={{headerShown: false}}/>
+        <Stack.Screen name = 'detailScreen' 
+        component={DetailScreen} 
+        options={
+          { title: 'Song Details', 
+          headerStyle: {
+            backgroundColor: Themes.colors.background,
+          },
+          headerTintColor: Themes.colors.spotify,
+          headerBackTitle: 'Back',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+            color: Themes.colors.white
+          }}
+        }/>
+        <Stack.Screen name = 'previewScreen' 
+        component={PreviewScreen}
+        options={
+          { title: 'Song Preview', 
+          headerStyle: {
+            backgroundColor: Themes.colors.background,
+          },
+          headerTintColor: Themes.colors.spotify,
+          headerBackTitle: 'Back',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+            color: Themes.colors.white
+          }}
+        }/>
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: Themes.colors.background,
-    justifyContent: "center",
-    alignItems: "center",
-    flex: 1,
-    padding: 0,
-    margin: 0,
-  },
-
-  connect: {
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    backgroundColor: Themes.colors.spotify,
-    borderRadius: 99999,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-
-  connectText: {
-    color: 'white',
-    fontSize: 20,
-    paddingLeft: 8,
-    fontWeight: 'bold',
-  },
-
-  connectLogo: {
-    width: 20,
-    height: 20,
-  },
-
-  Header: {
-    backgroundColor: Themes.colors.background,
-    justifyContent: "center",
-    alignItems: "center",
-    flexDirection: 'row',
-    paddingVertical: 20,
-  },
-});

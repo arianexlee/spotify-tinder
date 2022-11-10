@@ -2,29 +2,37 @@ import React from "react";
 import { StyleSheet, SafeAreaView, View, Text, Pressable, Image, FlatList} from "react-native";
 import { Themes } from "../assets/Themes";
 import { millisToMinutesAndSeconds } from "../utils";
+import { AntDesign } from '@expo/vector-icons';
+import { useNavigation } from "@react-navigation/native";
 
-const SongItem = (props) => {
-    console.log("props", props.item.album.images[0].url)
+export default function SongItem(props) {
+    console.log(props);
+    const navigation = useNavigation();
     return (
-        <View style={styles.songContainer}>
-            <View style={styles.songIndex}>
-                <Text style={{color:"white"}}>{props.index + 1}</Text>
+        <Pressable onPress={() => navigation.navigate('detailScreen', {url: props.item.external_urls.spotify})}>
+            <View style={styles.songContainer}>
+                <View style={styles.songIndex}>
+                    <Pressable onPress={() => navigation.navigate('previewScreen', {url: props.item.preview_url})}>
+                        <AntDesign name="play" size={20} color={Themes.colors.spotify} />
+                    </Pressable>
+                    {/* <Text style={{color:"white"}}>{props.index + 1}</Text> */}
+                </View>
+                <View style={styles.albumImageContainer}>
+                    <Image source={{uri: props.item.album.images[0].url}} style={styles.albumImage}>
+                    </Image>            
+                </View>
+                <View style={styles.songTitleContainer}>
+                    <Text numberOfLines={1} style={{color:"white", paddingBottom: 2}}>{props.item.name}</Text>
+                    <Text numberOfLines={1} style={{color: Themes.colors.gray}}>{props.item.album.artists[0].name}</Text>
+                </View>
+                <View style={styles.songAlbumContainer}>
+                    <Text numberOfLines={1} style={{color:"white"}}>{props.item.album.name}</Text>
+                </View>
+                <View style={styles.songDurationContainer}>
+                    <Text numberOfLines={1} style={{color:"white"}}>{millisToMinutesAndSeconds(props.item.duration_ms)}</Text>
+                </View>
             </View>
-            <View style={styles.albumImageContainer}>
-                <Image source={{uri: props.item.album.images[0].url}} style={styles.albumImage}>
-                </Image>            
-            </View>
-            <View style={styles.songTitleContainer}>
-                <Text numberOfLines={1} style={{color:"white", paddingBottom: 2}}>{props.item.name}</Text>
-                <Text numberOfLines={1} style={{color: Themes.colors.gray}}>{props.item.album.artists[0].name}</Text>
-            </View>
-            <View style={styles.songAlbumContainer}>
-                <Text numberOfLines={1} style={{color:"white"}}>{props.item.album.name}</Text>
-            </View>
-            <View style={styles.songDurationContainer}>
-                <Text numberOfLines={1} style={{color:"white"}}>{millisToMinutesAndSeconds(props.item.duration_ms)}</Text>
-            </View>
-        </View>
+        </Pressable>
     );
 }
 
@@ -42,15 +50,13 @@ const styles = StyleSheet.create({
     songIndex: {
         flexDirection: 'row',
         width: 40,
-        // backgroundColor: "red",
         justifyContent: 'center',
         alignItems: 'center',
         paddingLeft: 10,
     },
 
     albumImageContainer: {
-        // backgroundColor: 'white',
-        paddingHorizontal: 10,
+        paddingHorizontal: 8,
     },
 
     albumImage: {
@@ -62,21 +68,18 @@ const styles = StyleSheet.create({
 
     songTitleContainer: {
         width: 140,
-        // backgroundColor: 'pink',
-        paddingHorizontal: 10,
+        paddingHorizontal: 8,
     },
 
     songAlbumContainer: {
         width: 100,
-        // backgroundColor: 'blue',
         paddingHorizontal: 10,
     },
 
     songDurationContainer: {
         width: 60,
-        // backgroundColor: 'yellow',
-        paddingHorizontal: 10,
+        paddingHorizontal: 8,
     }
 });
 
-export default SongItem;
+// export default SongItem;
