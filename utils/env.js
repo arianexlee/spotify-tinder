@@ -43,6 +43,8 @@ const ENV = {
       "https://api.spotify.com/v1/me/top/tracks?time_range=long_term",
     ALBUM_TRACK_API_GETTER: (albumId) =>
       `https://api.spotify.com/v1/albums/${albumId}/tracks`,
+    RECOMMENDATION_API:
+      "https://api.spotify.com/v1/recommendations?limit=10&seed_genres=classical%2Ccountry",
   },
 };
 

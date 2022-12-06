@@ -6,14 +6,16 @@ import SongItem from "../components/songItem";
 
 
 export default function HomeScreen({navigation}) {
-  const { token, tracks, getSpotifyAuth } = useSpotifyAuth();
+  const { token, tracks, recommendations, getSpotifyAuth } = useSpotifyAuth();
+
+  console.log("FIRST REC:", recommendations[0])
 
   const AuthButton = (props) => {
     return (
       <Pressable onPress={props.authFunction} style={styles.connect}>
         <Image source={require('../assets/spotify-logo.png')} style={styles.connectLogo}>
         </Image>
-        <Text style={styles.connectText}>Connect with Spotify</Text>
+        <Text style={styles.welcomeText}>Connect with Spotify</Text>
       </Pressable>
     )
   }
@@ -33,7 +35,7 @@ export default function HomeScreen({navigation}) {
       <View style={styles.Header}>
         <Image source={require('../assets/spotify-logo.png')} style={styles.connectLogo}>
         </Image>
-        <Text style={styles.connectText}>My Top Tracks</Text>
+        <Text style={styles.welcomeText}>Welcome, Ariane</Text>
       </View>
     );
   }
@@ -56,6 +58,7 @@ export default function HomeScreen({navigation}) {
      <SafeAreaView style={styles.container}>
         {header}
         {contentDisplayed}
+        {header}
      </SafeAreaView>
   );
 }
@@ -80,10 +83,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 
-  connectText: {
+  welcomeText: {
     color: 'white',
-    fontSize: 20,
-    paddingLeft: 8,
+    fontSize: 24,
     fontWeight: 'bold',
   },
 

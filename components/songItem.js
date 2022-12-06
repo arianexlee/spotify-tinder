@@ -6,7 +6,6 @@ import { AntDesign } from '@expo/vector-icons';
 import { useNavigation } from "@react-navigation/native";
 
 export default function SongItem(props) {
-    console.log(props);
     const navigation = useNavigation();
     return (
         <Pressable onPress={() => navigation.navigate('detailScreen', {url: props.item.external_urls.spotify})}>

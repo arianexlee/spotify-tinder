@@ -5,7 +5,6 @@ import { WebView } from 'react-native-webview';
 
 
 const DetailScreen = ({route}) => {
-    console.log(route.params.url)
     return (
         <WebView source={{ uri: route.params.url}} />
     );

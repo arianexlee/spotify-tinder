@@ -6,7 +6,7 @@ import {
   useAuthRequest,
   makeRedirectUri,
 } from "expo-auth-session";
-import { getMyTopTracks, getAlbumTracks } from "./apiOptions";
+import { getMyTopTracks, getAlbumTracks, getRecommendations } from "./apiOptions";
 
 import * as WebBrowser from "expo-web-browser";
 
@@ -24,6 +24,7 @@ WebBrowser.maybeCompleteAuthSession();
 const useSpotifyAuth = (ALBUM_ONLY = false) => {
   const [token, setToken] = useState("");
   const [tracks, setTracks] = useState([]);
+  const [recommendations, setRecommendations] = useState([]);
   const [_, response, promptAsync] = useAuthRequest(
     {
       responseType: ResponseType.Token,
@@ -57,15 +58,19 @@ const useSpotifyAuth = (ALBUM_ONLY = false) => {
   useEffect(() => {
     const fetchTracks = async () => {
       let res;
+      let ress; 
       switch (ALBUM_ONLY) {
         case true:
           res = await getAlbumTracks(ALBUM_ID, token);
           break;
         default:
           res = await getMyTopTracks(token);
+          ress = await getRecommendations(token)
           break;
       }
-      setTracks(res);
+      setTracks(res)
+      setRecommendations(ress)
+      ;
     };
 
     if (token) {
@@ -73,6 +78,21 @@ const useSpotifyAuth = (ALBUM_ONLY = false) => {
       fetchTracks();
     }
   }, [token]);
+
+  useEffect(() => {
+    const fetchRecommendations = async () => {
+      let res;
+      res = await getRecommendations(token)
+      setRecommendations(res)
+      ;
+    };
+
+    if (token) {
+      // Authenticated, make API request
+      fetchRecommendations();
+    }
+  }, [tracks]);
+
 
   const setLoggedIn = () => {
     promptAsync(
@@ -83,7 +103,7 @@ const useSpotifyAuth = (ALBUM_ONLY = false) => {
     );
   };
   // TO DO: pick better naming conventions
-  return { token: token ?? undefined, tracks, getSpotifyAuth: setLoggedIn };
+  return { token: token ?? undefined, tracks, recommendations, getSpotifyAuth: setLoggedIn };
 };
 
 export default useSpotifyAuth;
