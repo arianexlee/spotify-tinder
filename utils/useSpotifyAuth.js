@@ -1,14 +1,14 @@
 import getEnv from "./env";
 import { Platform } from "react-native";
-import { useState, useEffect } from "react";
 import {
   ResponseType,
   useAuthRequest,
   makeRedirectUri,
 } from "expo-auth-session";
-import { getMyTopTracks, getAlbumTracks, getRecommendations } from "./apiOptions";
-
+import { getMyTopTracks, getAlbumTracks, getRecommendations, getTrackImages, getCurrentUserPlaylists, getCurrentUserProfile } from "./apiOptions";
 import * as WebBrowser from "expo-web-browser";
+import { useState, useEffect, createContext, useContext} from "react";
+
 
 const {
   REDIRECT_URI,
@@ -25,6 +25,8 @@ const useSpotifyAuth = (ALBUM_ONLY = false) => {
   const [token, setToken] = useState("");
   const [tracks, setTracks] = useState([]);
   const [recommendations, setRecommendations] = useState([]);
+  const [playlists, setPlaylists] = useState([]);
+  const [user, setUser] = useState([]);
   const [_, response, promptAsync] = useAuthRequest(
     {
       responseType: ResponseType.Token,
@@ -49,50 +51,88 @@ const useSpotifyAuth = (ALBUM_ONLY = false) => {
   useEffect(() => {
     if (response?.type === "success") {
       const { access_token } = response.params;
+      console.log("Access Token:", access_token)
       setToken(access_token);
     }
     if (Platform.OS === "web" && location.hash)
       setToken(location.hash.split("=")[1]);
   }, [response]);
 
+
   useEffect(() => {
     const fetchTracks = async () => {
       let res;
-      let ress; 
+      let recommendations; 
+      let playlists;
+      let user;
       switch (ALBUM_ONLY) {
         case true:
           res = await getAlbumTracks(ALBUM_ID, token);
           break;
         default:
           res = await getMyTopTracks(token);
-          ress = await getRecommendations(token)
+          setTracks(res)
+          const top5Songs = res.slice(0, 5);
+          const seedData = []
+          top5Songs.forEach(item => 
+            seedData.push(item.id))
+          // console.log("Seed Data: ", seedData)
+          recommendations = await getRecommendations(token, seedData)
+          const trackIDs = []
+          recommendations.forEach(item => 
+            trackIDs.push(item.id))
+          setRecommendations(recommendations)
+          playlists = await getCurrentUserPlaylists(token)
+          setPlaylists(playlists)
+          user = await getCurrentUserProfile(token)
+          setUser(user)
           break;
       }
-      setTracks(res)
-      setRecommendations(ress)
       ;
     };
-
     if (token) {
       // Authenticated, make API request
       fetchTracks();
     }
   }, [token]);
 
-  useEffect(() => {
-    const fetchRecommendations = async () => {
-      let res;
-      res = await getRecommendations(token)
-      setRecommendations(res)
-      ;
-    };
 
-    if (token) {
-      // Authenticated, make API request
-      fetchRecommendations();
-    }
-  }, [tracks]);
 
+
+  // useEffect(() => {
+  //   const fetchTrackImages = async () => {
+  //     let res;
+  //     res = await getTrackImages(token, trackIds);
+  //     setTracks(res)
+  //     const top5Songs = res.slice(0, 5);
+  //     const seedData = []
+  //     top5Songs.forEach(item => 
+  //       seedData.push(item.id))
+  //     recommendations = await getRecommendations(token, seedData)
+  //     //now get track info + features
+  //     setRecommendations(recommendations)
+  //   };
+  //   if (token) {
+  //     // Authenticated, make API request
+  //     fetchTracks();
+  //   }
+  // }, [token]);
+
+
+
+  // useEffect(() => {
+  //   const fetchRecommendations = async () => {
+  //     let res;
+  //     res = await getRecommendations(token)
+  //     setRecommendations(res)
+  //     ;
+  //   };
+
+  //   if (token) {
+  //     // Authenticated, make API request
+  //     fetchRecommendations();
+  //   }
+  // }, [tracks]);
 
   const setLoggedIn = () => {
     promptAsync(
@@ -103,7 +143,7 @@ const useSpotifyAuth = (ALBUM_ONLY = false) => {
     );
   };
   // TO DO: pick better naming conventions
-  return { token: token ?? undefined, tracks, recommendations, getSpotifyAuth: setLoggedIn };
+  return { token: token ?? undefined, tracks, recommendations, playlists, user, getSpotifyAuth: setLoggedIn };
 };
 
 export default useSpotifyAuth;

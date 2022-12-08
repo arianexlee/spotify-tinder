@@ -3,4 +3,5 @@ export const colors = {
   spotify: '#1DB954',
   gray: '#B3B3B3',
   white: '#FFFFFF',
+  blue: '#51ABFF'
 };

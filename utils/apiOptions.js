@@ -4,7 +4,7 @@ import CachedAlbumTracks from './albumTracksCache.json';
 import getEnv from './env';
 
 const {
-  SPOTIFY_API: { SHORT_TERM_API, LONG_TERM_API, ALBUM_TRACK_API_GETTER, RECOMMENDATION_API},
+  SPOTIFY_API: { SHORT_TERM_API, LONG_TERM_API, ALBUM_TRACK_API_GETTER},
 } = getEnv();
 
 const NETWORK_FAILURE = new Error(
@@ -18,6 +18,19 @@ const fetcher = async (url, token) => {
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + token,
+      },
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const fetcher_w_post = async (url, token) => {
+  try {
+    return await axios(url, {
+      method: 'POST',
+      headers: {
         Authorization: 'Bearer ' + token,
       },
     });
@@ -56,12 +69,14 @@ export const getAlbumTracks = async (albumId, token) => {
   }
 };
 
-export const getRecommendations = async (token) => {
-  console.log('INITIAL_RECOMMENDATIONS')
+export const getRecommendations = async (token, seedData) => {
+  const stringSeedData = seedData.toString()
+  // console.log('String', stringSeedData)
+  const encodedSeedString = encodeURIComponent(stringSeedData)
+  const RECOMMENDATION_API = "https://api.spotify.com/v1/recommendations?limit=50&seed_tracks=" + encodedSeedString
   try {
     let res = await fetcher(RECOMMENDATION_API, token)
-    // console.log('RECOMMENDATIONS', res.data.tracks)
-    return res.data?.tracks
+    return res.data?.tracks // these should be recs based on seedData
   } catch (e) {
     console.error(e);
     alert(NETWORK_FAILURE);
@@ -70,49 +85,57 @@ export const getRecommendations = async (token) => {
 };
 
 
+export const getCurrentUserPlaylists = async (token) => {
+  const GET_CURRENT_USER_PLAYLISTS_API = "https://api.spotify.com/v1/me/playlists?limit=50"
+  try {
+    let res = await fetcher(GET_CURRENT_USER_PLAYLISTS_API, token)
+    return res.data?.items;
+  } catch (e) {
+    console.error(e);
+    alert(NETWORK_FAILURE);
+    return [];
+  }
+};
 
-// const featcher_w_params = async (url, params, token) => {
-//   try {
-//     return await axios.get(url, {
-//       headers: {
+export const getCurrentUserProfile = async (token) => {
+  const GET_CURRENT_USER = "https://api.spotify.com/v1/me"
+  try {
+    let res = await fetcher(GET_CURRENT_USER, token)
+    return res.data
+  } catch (e) {
+    console.error(e);
+    alert(NETWORK_FAILURE);
+    return [];
+  }
+};
 
-//       },
-//       params: {
+export const getTrackFeatures = async (token, trackIds) => {
+  const stringtrackIds = trackIds.toString()
+  const encodedtrackIds = encodeURIComponent(stringtrackIds)
+  const GET_TRACKS_API = "https://api.spotify.com/v1/tracks?ids=" + encodedtrackIds
+  console.log("API:", GET_TRACKS_API)
+  try {
+    let res = await fetcher(GET_TRACKS_API, token)
+    return res.data?.tracks // these should be recs based on seedData
+  } catch (e) {
+    console.error(e);
+    alert(NETWORK_FAILURE);
+    return [];
+  }
+};
 
-//       }
-//     })
-//   }
-// }
-
-// const fetcher_w_params = async (url, params, token) => {
-//   try {
-//     return await axios.get('https://api.spotify.com/v1/recommendations', {
-//         params: {
-//             'limit': '10',
-//             'market': 'ES',
-//             'seed_artists': '4NHQUGzhtTLFvgF5SZesLK',
-//             'seed_genres': 'country',
-//             'seed_tracks': '0c6xIDDpzE81m2q797ordA'
-//         },
-//         headers: {
-//             'Accept': 'application/json',
-//             'Content-Type': 'application/json',
-//             'Authorization': 'Bearer BQDwpWTEMTKz4tIkoCNFgyHCxN2MpTPv3i0rjdroU7blsU7yi-DDUkpm1AlzjXSJ8WQw63dzDIERLBrAkIEkab1g-al0jQG2tY6tAJqL1x4TMXgm90mBZIPEwLF1sh_2OZel6mpwGb3F9PbLR01zgciBA8uNHWLxrsXgUWvNWXg0JoribA'
-//         }
-//     });
-//     console.log('RESPONSE');
-//     // console.log(response);
-//     // return response;
-//     // return await axios.get(url, {seed_artists: [], seed_genres: ['country'], seed_tracks: []},
-//     //   {
-//     //   method: 'GET',
-//     //   headers: {
-//     //     Accept: 'application/json',
-//     //     'Content-Type': 'application/json',
-//     //     Authorization: 'Bearer ' + token,
-//     //   },
-//     // });
-//   } catch (error) {
-//     console.log(error);
-//   }
+// export const addTrack = (playlistID, trackURI) => {
+//   axios.post('https://api.spotify.com/v1/playlists/' + playlistID + '/tracks', {
+//     uris: [trackURI]
+//   }, {
+//     headers: {
+//       Authorization: 'Bearer ' + token,
+//     }
+//   })
+//   .then(response => {
+//     console.log(response);
+//   })
+//   .catch(error => {
+//     console.error(error);
+//   });
 // };
