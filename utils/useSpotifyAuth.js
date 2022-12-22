@@ -72,7 +72,9 @@ const useSpotifyAuth = (ALBUM_ONLY = false) => {
         default:
           res = await getMyTopTracks(token);
           setTracks(res)
+          console.log("Tracks", tracks)
           const top5Songs = res.slice(0, 5);
+          // console.log("Top 5:", top5Songs)
           const seedData = []
           top5Songs.forEach(item => 
             seedData.push(item.id))

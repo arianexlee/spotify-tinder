@@ -11,7 +11,7 @@ const Stack = createStackNavigator();
 export const recsContext = createContext(null)
 export const savedRecsContext = createContext(null)
 export const userPlaylistsContext = createContext(null)
-export const globalTokenContext = createContext(null)
+export const popupVisibleContext = createContext(null)
 
 
 
@@ -21,8 +21,10 @@ export default function App() {
   const [recs, setRecs] = useState([])
   const [savedRecs, setSavedRecs] = useState([])
   const [userPlaylists, setUserPlaylists] = useState([])
+  const [isPopupVisible, setIsPopupVisible] = useState(false)
 
   return (
+    <popupVisibleContext.Provider value ={{isPopupVisible, setIsPopupVisible}}>
     <userPlaylistsContext.Provider value={{userPlaylists, setUserPlaylists}}>
     <recsContext.Provider value={{recs, setRecs}}>
       <savedRecsContext.Provider value={{savedRecs, setSavedRecs}}>
@@ -44,5 +46,6 @@ export default function App() {
       </savedRecsContext.Provider>
     </recsContext.Provider>
     </userPlaylistsContext.Provider>
+    </popupVisibleContext.Provider>
   );
 }

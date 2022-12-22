@@ -22,7 +22,9 @@ const fetcher = async (url, token) => {
       },
     });
   } catch (error) {
+    console.log('fetcher error')
     console.log(error);
+
   }
 };
 
@@ -35,6 +37,7 @@ const fetcher_w_post = async (url, token) => {
       },
     });
   } catch (error) {
+    console.log('fetcher w post error')
     console.log(error);
   }
 };
@@ -43,10 +46,12 @@ export const getMyTopTracks = async (token) => {
   const cache = { data: { items: CachedTopTracks } };
   try {
     let res = await fetcher(SHORT_TERM_API, token);
+    console.log('Returned Top Tracks:', res.data.items)
     if (!res || !res.data?.items.length) res = await fetcher(LONG_TERM_API, token);
     if (!res || !res.data?.items.length) res = cache;
     return res.data?.items;
   } catch (e) {
+    console.log('getMyTopTracks error')
     console.error(e);
     alert(NETWORK_FAILURE);
     return cache;
@@ -63,6 +68,7 @@ export const getAlbumTracks = async (albumId, token) => {
     if (!transformedResponse) return CachedAlbumTracks;
     return transformedResponse;
   } catch (e) {
+    console.log('getAlbumTracksError')
     console.error(e);
     alert(NETWORK_FAILURE);
     return CachedAlbumTracks;
@@ -71,13 +77,21 @@ export const getAlbumTracks = async (albumId, token) => {
 
 export const getRecommendations = async (token, seedData) => {
   const stringSeedData = seedData.toString()
-  // console.log('String', stringSeedData)
   const encodedSeedString = encodeURIComponent(stringSeedData)
   const RECOMMENDATION_API = "https://api.spotify.com/v1/recommendations?limit=50&seed_tracks=" + encodedSeedString
   try {
     let res = await fetcher(RECOMMENDATION_API, token)
+    let recs = res.data.tracks
+    // let cleanedRecs
+    // for (let i = 0; i < recs.length; i++) {
+    //   if (recs[i].preview_url != null) {
+    //     cleanedRecs.push(recs[i])
+    //   }
+    // }
+    // console.log("Cleaned", cleanedRecs)
     return res.data?.tracks // these should be recs based on seedData
   } catch (e) {
+    console.log('getRecommendations error')
     console.error(e);
     alert(NETWORK_FAILURE);
     return [];
@@ -91,6 +105,7 @@ export const getCurrentUserPlaylists = async (token) => {
     let res = await fetcher(GET_CURRENT_USER_PLAYLISTS_API, token)
     return res.data?.items;
   } catch (e) {
+    console.log('getCurrentUserPlaylists error')
     console.error(e);
     alert(NETWORK_FAILURE);
     return [];
@@ -103,6 +118,7 @@ export const getCurrentUserProfile = async (token) => {
     let res = await fetcher(GET_CURRENT_USER, token)
     return res.data
   } catch (e) {
+    console.log('getCurrentUserProfile error')
     console.error(e);
     alert(NETWORK_FAILURE);
     return [];

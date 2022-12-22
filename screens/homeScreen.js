@@ -1,17 +1,17 @@
 import React from "react";
-import { useContext} from "react";
+import { useContext, useState, useEffect } from "react";
 import { StyleSheet, Image, SafeAreaView, Text, Pressable, FlatList, View } from "react-native";
 import { useSpotifyAuth } from "../utils";
 import { Themes } from "../assets/Themes";
 import SavedRecItem from "../components/SavedRecItem";
-// import { useNavigation } from "@react-navigation/native";
-import { recsContext, savedRecsContext, userPlaylistsContext } from "../App";
+import { popupVisibleContext, recsContext, savedRecsContext, userPlaylistsContext } from "../App";
 
 
-export default function HomeScreen({navigation}) {
+export default function HomeScreen({navigation, route}) {
   const {recs, setRecs} = useContext(recsContext)
   const {savedRecs, setSavedRecs} = useContext(savedRecsContext)
   const {userPlaylists, setUserPlaylists} = useContext(userPlaylistsContext)
+  const {isPopupVisible, setIsPopupVisible} = useContext(popupVisibleContext)
   const { token, tracks, recommendations, playlists, user, getSpotifyAuth } = useSpotifyAuth();
   setRecs(recommendations)
   setUserPlaylists(playlists)
@@ -29,16 +29,18 @@ export default function HomeScreen({navigation}) {
     );
   }
   
-  const Header = (props) => {
-    return (
-      <View style={styles.Header}>
-        <Text style={styles.welcomeText}>Welcome, Name</Text>
-      </View>
-    );
-  }
+  // const Header = (props) => {
+  //   return (
+  //     <View style={styles.Header}>
+  //       <Text style={styles.welcomeText}>Welcome, Name</Text>
+  //     </View>
+  //   );
+  // }
 
+  // useEffect(() => {console.log('running'), setSavedRecs(savedRecs)}, [route]
+  // )
 
-  const SavedRecList = ({savedRecs}) => {
+  const SavedRecList = () => {
     return (
       <FlatList
         data={savedRecs}
@@ -48,12 +50,37 @@ export default function HomeScreen({navigation}) {
     );
   }
 
+  // const [isVisible, setIsVisible] = useState(false);
+
+  // isPopupVisible ? setIsVisible(true) : null
+
+  // useEffect(() => {
+  //   if (isVisible) {
+  //     const timeout = setTimeout(() => setIsVisible(false), 3000);
+  //     return () => clearTimeout(timeout);
+  //   }
+  // }, [isVisible]);
+
+  // const Modal = () => {
+  //   return (
+  //     <Modal animationType="fade" transparent={true} visible={isVisible}>
+  //       <View style={styles.modalContainer}>
+  //         <View style={styles.popup}>
+  //           <Text>This is a temporary popup</Text>
+  //         </View>
+  //       </View>
+  //     </Modal>
+  //   )
+  // }
+
+  
 
   let contentDisplayed;
   if (token) {
     contentDisplayed =
     <View style={styles.bodyContainer}>
       <View style={styles.welcomeTextContainer}>
+        {/* <Modal/> */}
         <Text style={styles.mdTitleText}>Welcome,</Text>
         <Text style={styles.mdTitleText}>{first_name}</Text>
       </View>
@@ -67,18 +94,13 @@ export default function HomeScreen({navigation}) {
           <Text style={styles.smTitleText}>Saved Recommendations:</Text>
         </View>
         <View style={styles.recommendationEditAndSongsContainer}>
-          <SavedRecList savedRecs={savedRecs}/>
+          <SavedRecList/>
         </View>
       </View>
     </View>
   } else {
     contentDisplayed = 
     <AuthButton authFunction={getSpotifyAuth}/>
-  }
-
-  let header;
-  if (token) {
-    header = <Header/>
   }
   
   return (
@@ -176,4 +198,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     paddingVertical: 20,
   },
+
+  modalContainer: {
+    width: '100%',
+    backgroundColor: 'yellow'
+  },
+
+  popup: {
+    width: '100%',
+    backgroundColor: 'red'
+  }
 });

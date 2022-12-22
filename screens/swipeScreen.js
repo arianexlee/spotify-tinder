@@ -31,10 +31,10 @@ const SwipeScreen = ({navigation}) => {
         setCurrentSongIndex(currentSongIndex + 1)
         pause(currentPlayer)
         // console.log("Index:", index)
-        console.log("CurrentSongIndex:", currentSongIndex)
-        console.log("CurrentSongIndex:", recs[currentSongIndex + 1].preview_url)
-        console.log("Old Song Sound:", songSound)
-        console.log("The Supposed new songSound", recs[currentSongIndex + 1].preview_url)
+        // console.log("CurrentSongIndex:", currentSongIndex)
+        // console.log("CurrentSongIndex:", recs[currentSongIndex + 1].preview_url)
+        // console.log("Old Song Sound:", songSound)
+        // console.log("The Supposed new songSound", recs[currentSongIndex + 1].preview_url)
         // setSongSound(recs[currentSongIndex + 1].preview_url)
         // console.log("New Song Sound:", songSound)
         play(recs[currentSongIndex + 1].preview_url)
@@ -44,12 +44,12 @@ const SwipeScreen = ({navigation}) => {
         setSongCount(songCount + 1)
         setCurrentSongIndex(currentSongIndex + 1)
         pause(currentPlayer)
-        // setSongSound(recs[currentSongIndex + 1].preview_url)
+        console.log("URL:", recs[currentSongIndex + 1].preview_url)
         play(recs[currentSongIndex + 1].preview_url)
     }
 
     useEffect(() => {
-        console.log("First Play URL:", songSound)
+        // console.log("First Play URL:", songSound)
         play(songSound);
     }, 
     [])
@@ -114,7 +114,6 @@ const SwipeScreen = ({navigation}) => {
                             </Image>
                             <Text style={styles.mdTitleText}>{card.name}</Text>
                             <Text style={styles.lgRegBodyText}>{card.artists[0].name}</Text>
-
                         </LinearGradient>
                     )}
                 />

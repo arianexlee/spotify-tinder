@@ -5,10 +5,23 @@ import { millisToMinutesAndSeconds } from "../utils";
 import { AntDesign } from '@expo/vector-icons';
 import { useNavigation } from "@react-navigation/native";
 import { withSafeAreaInsets } from "react-native-safe-area-context";
+import { useState, useEffect, createContext, useContext} from "react";
+import { recsContext, savedRecsContext } from "../App";
 
 export default function SavedRecItem(props) {
     const navigation = useNavigation();
-    console.log("SavedRecProps: ", props)
+    const {savedRecs, setSavedRecs} = useContext(savedRecsContext)
+    // console.log("SavedRecs List:", savedRecs)
+    // console.log("SavedRecProps: ", props)
+
+    function adding(uri, token, currentSavedSong){
+        const index = savedRecs.indexOf(currentSavedSong);
+        navigation.navigate('choosePlaylistScreen', {songURI: uri, token: token})
+        // if (index > -1) {
+        //     setSavedRecs(savedRecs.splice(index, 1))
+        // }
+    }
+
     return(
         <View style={styles.container}>
             <View style={styles.songAndImgContainer}>
@@ -26,7 +39,8 @@ export default function SavedRecItem(props) {
                 </View>
             </View>
             <View>
-                <Pressable onPress={() => navigation.navigate('choosePlaylistScreen', {songURI: props.item.uri, token: props.token})}>
+            {/* navigation.navigate('choosePlaylistScreen', {songURI: props.item.uri, token: props.token}) */}
+                <Pressable onPress={() => adding(props.item.uri, props.token, props.item)}>
                     <View style={styles.addButton}>
                         <Text style={styles.smRegBodyText}>ADD TO PLAYLIST</Text>
                     </View>

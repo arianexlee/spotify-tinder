@@ -5,6 +5,7 @@ import { millisToMinutesAndSeconds } from "../utils";
 import { AntDesign } from '@expo/vector-icons';
 import { useNavigation } from "@react-navigation/native";
 import { useState, useEffect, createContext, useContext} from "react";
+import { popupVisibleContext, recsContext, savedRecsContext, userPlaylistsContext } from "../App";
 import { globalTokenContext } from "../App";
 import axios from 'axios';
 
@@ -14,12 +15,12 @@ import axios from 'axios';
 
 
 export const addTrack = (playlistID, trackURI, token) => {
-    console.log("HERE")
-    console.log("playlistID: ", playlistID)
+    // console.log("HERE")
+    // console.log("playlistID: ", playlistID)
     const encodedTrackURI = encodeURIComponent(trackURI)
-    console.log("trackURI: ", trackURI)
-    console.log("token: ", token)
-    console.log('https://api.spotify.com/v1/playlists/' + playlistID + '/tracks')
+    // console.log("trackURI: ", trackURI)
+    // console.log("token: ", token)
+    // console.log('https://api.spotify.com/v1/playlists/' + playlistID + '/tracks')
     axios.post('https://api.spotify.com/v1/playlists/' + playlistID + '/tracks', {
       uris: [trackURI]
     }, {
@@ -38,17 +39,20 @@ export const addTrack = (playlistID, trackURI, token) => {
 
 
 export default function PlaylistItem(props) {
-    console.log("Props:", props.item.id)
-    console.log("songURI: ", props.songURI)
-    console.log("TOKEN: ", props.token)
+  // const {isPopupVisible, setIsPopupVisible} = useContext(popupVisibleContext)
+    // console.log("Props:", props.item.id)
+    // console.log("songURI: ", props.songURI)
+    // console.log("TOKEN: ", props.token)
     const navigation = useNavigation();
 
-    function whenAdded(){
-
+    function whenAdded(id, songURI, token) {
+      // setIsPopupVisible(true)
+      addTrack(id, songURI, token)
+      navigation.navigate('homeScreen')
     }
 
     return(
-        <Pressable onPress={() => addTrack(props.item.id, props.songURI, props.token)}>
+        <Pressable onPress={() => whenAdded(props.item.id, props.songURI, props.token)}>
             <View style={styles.container}>
                 <Text style={styles.lgBoldBodyText}>{props.item.name}</Text>
             </View>
