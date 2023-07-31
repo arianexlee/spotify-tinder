@@ -1,11 +1,9 @@
 import React from "react";
 import { StyleSheet, SafeAreaView, View, Text, Pressable, Image, FlatList} from "react-native";
 import { Themes } from "../assets/Themes";
-import { WebView } from 'react-native-webview';
-import { useState, useEffect, createContext, useContext} from "react";
-import { recsContext, savedRecsContext, userPlaylistsContext } from "../App";
+import { useContext} from "react";
+import { userPlaylistsContext } from "../App";
 import PlaylistItem from "../components/PlaylistItem";
-import axios from 'axios';
 
 
 export default function ChoosePlaylistScreen({navigation, route}) {

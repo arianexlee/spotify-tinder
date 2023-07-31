@@ -27,7 +27,7 @@ export default function App() {
     <popupVisibleContext.Provider value ={{isPopupVisible, setIsPopupVisible}}>
     <userPlaylistsContext.Provider value={{userPlaylists, setUserPlaylists}}>
     <recsContext.Provider value={{recs, setRecs}}>
-      <savedRecsContext.Provider value={{savedRecs, setSavedRecs}}>
+    <savedRecsContext.Provider value={{savedRecs, setSavedRecs}}>
       <NavigationContainer>
         <Stack.Navigator>
           <Stack.Screen name = 'homeScreen' 
@@ -43,7 +43,7 @@ export default function App() {
           options={{headerShown: false}}/>
         </Stack.Navigator>
       </NavigationContainer>
-      </savedRecsContext.Provider>
+    </savedRecsContext.Provider>
     </recsContext.Provider>
     </userPlaylistsContext.Provider>
     </popupVisibleContext.Provider>

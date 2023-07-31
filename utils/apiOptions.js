@@ -82,14 +82,15 @@ export const getRecommendations = async (token, seedData) => {
   try {
     let res = await fetcher(RECOMMENDATION_API, token)
     let recs = res.data.tracks
-    // let cleanedRecs
-    // for (let i = 0; i < recs.length; i++) {
-    //   if (recs[i].preview_url != null) {
-    //     cleanedRecs.push(recs[i])
-    //   }
-    // }
-    // console.log("Cleaned", cleanedRecs)
-    return res.data?.tracks // these should be recs based on seedData
+    let cleanedRecs = []
+    for (let i = 0; i < recs.length; i++) {
+      if (recs[i].preview_url != null) {
+        cleanedRecs.push(recs[i])
+      }
+    }
+    console.log("Cleaned", cleanedRecs)
+    return cleanedRecs
+    // return res.data?.tracks // these should be recs based on seedData
   } catch (e) {
     console.log('getRecommendations error')
     console.error(e);
@@ -129,7 +130,7 @@ export const getTrackFeatures = async (token, trackIds) => {
   const stringtrackIds = trackIds.toString()
   const encodedtrackIds = encodeURIComponent(stringtrackIds)
   const GET_TRACKS_API = "https://api.spotify.com/v1/tracks?ids=" + encodedtrackIds
-  console.log("API:", GET_TRACKS_API)
+  // console.log("API:", GET_TRACKS_API)
   try {
     let res = await fetcher(GET_TRACKS_API, token)
     return res.data?.tracks // these should be recs based on seedData
@@ -139,19 +140,3 @@ export const getTrackFeatures = async (token, trackIds) => {
     return [];
   }
 };
-
-// export const addTrack = (playlistID, trackURI) => {
-//   axios.post('https://api.spotify.com/v1/playlists/' + playlistID + '/tracks', {
-//     uris: [trackURI]
-//   }, {
-//     headers: {
-//       Authorization: 'Bearer ' + token,
-//     }
-//   })
-//   .then(response => {
-//     console.log(response);
-//   })
-//   .catch(error => {
-//     console.error(error);
-//   });
-// };

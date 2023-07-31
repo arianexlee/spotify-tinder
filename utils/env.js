@@ -46,10 +46,6 @@ const ENV = {
       "https://api.spotify.com/v1/me/top/tracks?time_range=long_term",
     ALBUM_TRACK_API_GETTER: (albumId) =>
       `https://api.spotify.com/v1/albums/${albumId}/tracks`
-      // ,
-    // RECOMMENDATION_API:
-    // "https://api.spotify.com/v1/recommendations?seed_tracks=3GaIA718XNZODneN1KW6Vr%2C3kYARoLSAvt86VFZ55BQcq%2C3UMrglJeju5yWyYIW6o99b%2C702OK8cuyV4Rticb1m4fAb%2C4sNG6zQBmtq7M8aeeKJRMQ"
-      // "https://api.spotify.com/v1/recommendations?limit=10&seed_genres=classical%2Ccountry",
   },
 };
 

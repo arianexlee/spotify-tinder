@@ -72,13 +72,10 @@ const useSpotifyAuth = (ALBUM_ONLY = false) => {
         default:
           res = await getMyTopTracks(token);
           setTracks(res)
-          console.log("Tracks", tracks)
           const top5Songs = res.slice(0, 5);
-          // console.log("Top 5:", top5Songs)
           const seedData = []
           top5Songs.forEach(item => 
             seedData.push(item.id))
-          // console.log("Seed Data: ", seedData)
           recommendations = await getRecommendations(token, seedData)
           const trackIDs = []
           recommendations.forEach(item => 
@@ -97,44 +94,6 @@ const useSpotifyAuth = (ALBUM_ONLY = false) => {
       fetchTracks();
     }
   }, [token]);
-
-
-
-
-  // useEffect(() => {
-  //   const fetchTrackImages = async () => {
-  //     let res;
-  //     res = await getTrackImages(token, trackIds);
-  //     setTracks(res)
-  //     const top5Songs = res.slice(0, 5);
-  //     const seedData = []
-  //     top5Songs.forEach(item => 
-  //       seedData.push(item.id))
-  //     recommendations = await getRecommendations(token, seedData)
-  //     //now get track info + features
-  //     setRecommendations(recommendations)
-  //   };
-  //   if (token) {
-  //     // Authenticated, make API request
-  //     fetchTracks();
-  //   }
-  // }, [token]);
-
-
-
-  // useEffect(() => {
-  //   const fetchRecommendations = async () => {
-  //     let res;
-  //     res = await getRecommendations(token)
-  //     setRecommendations(res)
-  //     ;
-  //   };
-
-  //   if (token) {
-  //     // Authenticated, make API request
-  //     fetchRecommendations();
-  //   }
-  // }, [tracks]);
 
   const setLoggedIn = () => {
     promptAsync(
