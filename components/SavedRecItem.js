@@ -19,8 +19,10 @@ import { recsContext, savedRecsContext } from "../App";
 export default function SavedRecItem(props) {
   const navigation = useNavigation();
   const { savedRecs, setSavedRecs } = useContext(savedRecsContext);
+  const [isPressed, setIsPressed] = useState(false);
 
   function adding(uri, token, currentSavedSong) {
+    setIsPressed(true);
     console.log("BEFORE", savedRecs);
     const index = savedRecs.indexOf(currentSavedSong);
     const savedRecsCopy = savedRecs;
@@ -30,8 +32,12 @@ export default function SavedRecItem(props) {
     navigation.navigate("choosePlaylistScreen", { songURI: uri, token: token });
   }
 
+  useEffect(() => {
+    console.log("RERENDER");
+  }, [savedRecs]);
+
   return (
-    <View style={styles.container}>
+    <View style={isPressed ? { display: "none" } : styles.container}>
       <View style={styles.songAndImgContainer}>
         <View style={styles.imgContainer}>
           <Image

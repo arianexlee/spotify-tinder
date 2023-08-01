@@ -20,6 +20,7 @@ export default function HomeScreen({ navigation, route }) {
   const { userPlaylists, setUserPlaylists } = useContext(userPlaylistsContext);
   const { token, recommendations, playlists, user, getSpotifyAuth } =
     useSpotifyAuth();
+
   useEffect(() => {
     setRecs(recommendations);
     setUserPlaylists(playlists);
@@ -46,6 +47,7 @@ export default function HomeScreen({ navigation, route }) {
   };
 
   const SavedRecList = () => {
+    console.log("SAVED", savedRecs);
     return (
       <FlatList
         data={savedRecs}
